@@ -1,29 +1,76 @@
 package xyz.pixelwastaken.backend.controller;
 
-import org.springframework.web.bind.annotation.*;
-import xyz.pixelwastaken.backend.model.Player;
-import xyz.pixelwastaken.backend.repo.PlayerRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.stereotype.Controller;
+import xyz.pixelwastaken.backend.dto.CreatePlayerInput;
+import xyz.pixelwastaken.backend.model.player.Player;
+import xyz.pixelwastaken.backend.service.PlayerService;
 
 import java.util.List;
+import java.util.UUID;
 
 
-@RestController
-@RequestMapping("/players")
+@Controller
+@RequiredArgsConstructor
 public class PlayerController {
 
-    private final PlayerRepository playerRepository;
+    private final PlayerService playerService;
 
-    public PlayerController(PlayerRepository playerRepository) {
-        this.playerRepository = playerRepository;
+    @QueryMapping
+    public List<Player> findPlayers() {
+        return playerService.findAll();
     }
 
-    @PostMapping
-    public Player createPlayer(@RequestBody Player player) {
-        return playerRepository.save(player);
+    @QueryMapping
+    public Player playerById(@Argument UUID id) {
+        return playerService.findById(id);
     }
 
-    @GetMapping
-    public List<Player> getPlayers() {
-        return playerRepository.findAll();
+    @QueryMapping
+    public Player playerByMcUuid(@Argument String mcId) {
+        return playerService.findByMcId(mcId);
     }
+
+
+
+
+    @MutationMapping
+    public Player createPlayer(@Argument CreatePlayerInput input) {
+        return playerService.create(input.getUsername(), input.getMcId());
+    }
+
+    @MutationMapping()
+    public boolean deletePlayer(@Argument UUID id) {
+        return playerService.delete(id);
+    }
+
+    @MutationMapping()
+    public boolean deleteAllPlayers() {
+        return playerService.deleteAll();
+    }
+
+//    @MutationMapping()
+//    public boolean kickPlayer(@Argument UUID id) {
+//        return playerService.deleteAll();
+//    }
+
+
+    @MutationMapping()
+    public boolean assignRole(@Argument UUID id, @Argument UUID roleId) {
+        return playerService.deleteAll();
+    }
+
+    @MutationMapping()
+    public boolean removeRole(@Argument UUID id, @Argument UUID roleId) {
+        return playerService.deleteAll();
+    }
+
+
+
+
+
+
 }

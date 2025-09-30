@@ -1,0 +1,21 @@
+input CreatePlayerInput {
+    username: String!
+    mcId: String!
+}
+
+type Player {
+    id: ID!
+    username: String
+    mcId: String
+}
+
+type Mutation {
+    createPlayer(input: CreatePlayerInput!): Player
+    deletePlayer(id: ID!): Boolean
+    deleteAllPlayers: Boolean
+}
+
+type Query {
+    findPlayers: [Player!]!
+    playerById(id: ID!): Player
+}
